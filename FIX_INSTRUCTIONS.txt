@@ -1,0 +1,9 @@
+Your error happens because /api/songs and /api/playlists are returning 404.
+That means you are opening the frontend with VS Code Live Server or directly as HTML, not through the Node backend.
+
+Correct way:
+1. Open terminal inside this folder.
+2. Run: node server.js
+3. Open: http://localhost:3000
+
+Do NOT open index.html with Live Server for this version.

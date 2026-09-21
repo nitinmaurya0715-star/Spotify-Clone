@@ -1,214 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Spotify - Your Favourite Music Is Here</title>
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spotify Clone Fixed</title>
+<!-- Inline favicon: stops the /favicon.ico 404 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231db954'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0b0b0b;--panel:#161616;--panel2:#1f1f1f;--text:#f2f2f2;--muted:#a3a3a3;--green:#1db954}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;grid-template-columns:230px 1fr;grid-template-rows:1fr auto;grid-template-areas:"side main" "foot foot"}
+aside{grid-area:side;background:#000;padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;margin-bottom:14px}
+.brand img{width:32px;height:32px}
+aside button{background:none;border:0;color:var(--muted);text-align:left;padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer}
+aside button:hover,aside button.active{color:var(--text);background:var(--panel2)}
+.card{margin-top:auto;background:var(--panel);border-radius:10px;padding:12px;color:var(--muted);font-size:13px}
+main{grid-area:main;overflow:auto;padding:24px;background:linear-gradient(#1c2a20,var(--bg) 320px)}
+header{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+header small{color:var(--muted);letter-spacing:.08em}
+h1{margin:2px 0 0;font-size:28px}
+#searchInput{background:var(--panel2);border:1px solid #333;color:var(--text);padding:10px 14px;border-radius:999px;width:min(320px,100%);font:inherit}
+.hero{background:linear-gradient(120deg,#1db954,#0f5132);border-radius:14px;padding:24px;margin-bottom:20px}
+.hero h2{margin:0 0 6px;font-size:26px}
+.hero p{margin:0 0 16px;color:#e5f7ea}
+button{font:inherit}
+.hero button{background:#000;color:#fff;border:0;border-radius:999px;padding:10px 18px;margin-right:8px;cursor:pointer}
+.hero button:hover{background:#222}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.panel{background:var(--panel);border-radius:14px;padding:16px;min-width:0}
+.panel h2{margin:0;font-size:18px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+select{background:var(--panel2);color:var(--text);border:1px solid #333;border-radius:8px;padding:6px 8px}
+#songCount{color:var(--muted);margin:0 0 10px;font-size:13px}
+.song{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 10px;border-radius:8px;cursor:pointer}
+.song:hover{background:var(--panel2)}
+.song.playing{background:var(--panel2);color:var(--green)}
+.song span{color:var(--muted);font-size:13px}
+.song small{color:var(--muted);display:block}
+.song.playing small{color:#7bd99a}
+.empty{color:var(--muted);padding:8px 0}
+footer{grid-area:foot;background:#000;border-top:1px solid #222;padding:12px 18px;display:grid;grid-template-columns:1fr 2fr 1fr;gap:16px;align-items:center;text-align:center}
+.now{display:flex;gap:12px;align-items:center;text-align:left;min-width:0}
+.now img{width:48px;height:48px;border-radius:6px;background:#222;flex:none}
+.now b,.now span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now span{color:var(--muted);font-size:13px}
+footer button{background:none;border:0;color:var(--text);font-size:18px;cursor:pointer;padding:4px 10px}
+footer button.play{background:#fff;color:#000;border-radius:50%;width:38px;height:38px;padding:0}
+#myProgressBar{width:min(420px,60%);vertical-align:middle;accent-color:var(--green)}
+#volumeRange{accent-color:var(--green);vertical-align:middle}
+footer label{text-align:right;color:var(--muted)}
+#currentTime,#durationTime{font-size:12px;color:var(--muted);display:inline-block;width:38px}
+button:focus-visible,input:focus-visible,select:focus-visible,.song:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@media (max-width:800px){
+  body{grid-template-columns:1fr;grid-template-areas:"main" "foot"}
+  aside{display:none}
+  .grid{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr}
+  footer label{text-align:center}
+}
+</style>
 </head>
-
 <body>
+<aside>
+  <div class="brand">
+    <!-- Inline SVG: replaces missing logo.svg -->
+    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231db954'/%3E%3Cpath d='M8 12c5-1.5 11-1 15 1.5M9 16.5c4-1 8.500-.6 12 1.400M10 20.500c3-.8 6-.5 9 1' stroke='%23000' stroke-width='2.200' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+    Spotify
+  </div>
+  <button class="active">⌂ Home</button>
+  <button>⌕ Search</button>
+  <button>▤ Library</button>
+  <div class="card" id="apiStatus">Checking API…</div>
+</aside>
 
-    <nav>
-        <ul>
-            <li class="brand">
-                <img src="logo.png" alt="Spotify Logo">
-                Spotify
-            </li>
-
-            <li>Home</li>
-            <li>About</li>
-        </ul>
-    </nav>
-
-    <div class="container">
-
-        <div class="songlist">
-            <h1>Best of NCS - No Copyright Sounds</h1>
-
-            <div class="songIteamContainer">
-
-                <div class="songItem">
-                    <img src="covers/1.jpg" alt="Let Me Love You">
-                    <span class="songName">Let Me Love You</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            05:34
-                            <i id="0" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/2.jpg" alt="Faded">
-                    <span class="songName">Faded</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:32
-                            <i id="1" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/3.jpg" alt="On and On">
-                    <span class="songName">On and On</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:28
-                            <i id="2" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/4.jpg" alt="Invincible">
-                    <span class="songName">Invincible</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            04:10
-                            <i id="3" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/5.jpg" alt="Mortals">
-                    <span class="songName">Mortals</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:50
-                            <i id="4" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/6.jpg" alt="Sky High">
-                    <span class="songName">Sky High</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:24
-                            <i id="5" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/7.jpg" alt="Why We Lose">
-                    <span class="songName">Why We Lose</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:18
-                            <i id="6" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/8.jpg" alt="Heroes Tonight">
-                    <span class="songName">Heroes Tonight</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:29
-                            <i id="7" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/9.jpg" alt="My Heart">
-                    <span class="songName">My Heart</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            03:42
-                            <i id="8" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="songItem">
-                    <img src="covers/10.jpg" alt="Symbolism">
-                    <span class="songName">Symbolism</span>
-
-                    <span class="songListPay">
-                        <span class="timestamp">
-                            04:02
-                            <i id="9" class="far songItemPlay fa-circle-play"></i>
-                        </span>
-                    </span>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="songBanner"></div>
-
+<main>
+  <header>
+    <div><small>GOOD EVENING</small><h1>Your music dashboard</h1></div>
+    <input id="searchInput" placeholder="Search songs or artists" aria-label="Search songs or artists">
+  </header>
+  <section class="hero">
+    <h2>Daily Mix</h2>
+    <p>Working frontend with safe fallback + backend API.</p>
+    <button id="heroPlay">▶ Play playlist</button><button id="shuffleBtn">⇄ Shuffle</button>
+  </section>
+  <section class="grid">
+    <div class="panel">
+      <div class="head">
+        <h2 id="listTitle">Popular tracks</h2>
+        <select id="sortSelect" aria-label="Sort songs"><option value="popular">Most played</option><option value="title">A-Z title</option></select>
+      </div>
+      <p id="songCount"></p>
+      <div id="songsList"></div>
     </div>
-
-    <div class="bottom">
-
-        <input
-            type="range"
-            name="range"
-            id="myProgressBar"
-            min="0"
-            max="100"
-            value="0"
-        >
-
-        <div class="icons">
-
-            <!-- Font Awesome Icons -->
-
-            <span id="previous" class="control-btn">
-                <i class="fa-solid fa-2x fa-backward-step"></i>
-            </span>
-
-            <span id="masterPlay" class="control-btn">
-                <i class="far fa-2x fa-circle-play"></i>
-            </span>
-
-            <span id="next" class="control-btn">
-                <i class="fa-solid fa-2x fa-forward-step"></i>
-            </span>
-
-        </div>
-
-        <div class="songInfo">
-            <img
-                src="playing.gif"
-                width="42"
-                alt="Playing animation"
-                id="gif"
-            >
-
-            <span id="masterSongName">
-                Warriyo - Mortals [NCS Release]
-            </span>
-        </div>
-
+    <div class="panel">
+      <h2>Recently played</h2>
+      <div id="recentList" class="empty">Play a song to see history.</div>
     </div>
+  </section>
+</main>
 
-    <script
-        src="https://kit.fontawesome.com/d919b35967.js"
-        crossorigin="anonymous">
-    </script>
+<footer>
+  <div class="now">
+    <img id="currentCover" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23282828'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%231db954'/%3E%3C/svg%3E">
+    <div><b id="masterSongName">Select a song</b><span id="masterArtist">Ready</span></div>
+  </div>
+  <div>
+    <button id="previous" aria-label="Previous">⏮</button>
+    <button id="masterPlay" class="play" aria-label="Play or pause">▶</button>
+    <button id="next" aria-label="Next">⏭</button><br>
+    <span id="currentTime">0:00</span>
+    <input id="myProgressBar" type="range" min="0" max="100" value="0" aria-label="Seek">
+    <span id="durationTime">0:00</span>
+  </div>
+  <label>Vol <input id="volumeRange" type="range" min="0" max="1" step=".05" value=".8"></label>
+</footer>
 
-    <script src="script.js"></script>
+<script>
+/* ---------- Data: API first, built-in fallback (fixes the 404) ---------- */
+const FALLBACK_SONGS = [
+  {id:1,title:"Midnight Drive",artist:"Neon Lane",plays:9800,duration:24,notes:[220,277,330,277,247,311,370,311]},
+  {id:2,title:"Golden Hour",artist:"Sunset Club",plays:8700,duration:20,notes:[262,330,392,330,294,370,440,370]},
+  {id:3,title:"Paper Planes",artist:"Aria Vale",plays:7600,duration:22,notes:[196,247,294,247,220,277,330,277]},
+  {id:4,title:"Blue Static",artist:"Wire & Moon",plays:6400,duration:18,notes:[330,392,440,392,349,440,523,440]},
+  {id:5,title:"Slow Rain",artist:"Kito",plays:5200,duration:26,notes:[174,220,262,220,196,247,294,247]}
+];
+let songs = [], view = [], current = -1, recent = [], shuffleOn = false;
 
+async function loadSongs(){
+  const status = document.getElementById('apiStatus');
+  try{
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 2500);
+    const res = await fetch('/api/songs',{signal:ctrl.signal});
+    clearTimeout(t);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(!Array.isArray(data) || !data.length) throw new Error('Empty response');
+    songs = data.map((s,i)=>({
+      id:s.id??i+1, title:s.title??s.name??'Untitled', artist:s.artist??'Unknown',
+      plays:s.plays??0, duration:s.duration??20,
+      notes:s.notes??FALLBACK_SONGS[i%FALLBACK_SONGS.length].notes
+    }));
+    status.innerHTML = 'Connected to API.';
+  }catch(e){
+    songs = FALLBACK_SONGS.slice();
+    status.innerHTML = 'API not reachable, using built-in songs.<br>Optional backend: <b>node server.js</b>';
+  }
+}
+
+/* ---------- Synth player (no audio files needed) ---------- */
+const $ = id => document.getElementById(id);
+let ctx, master, nodes = [], playing = false, pos = 0, startedAt = 0, ticker = null;
+
+function ensureCtx(){
+  if(!ctx){
+    ctx = new (window.AudioContext||window.webkitAudioContext)();
+    master = ctx.createGain();
+    master.gain.value = +$('volumeRange').value;
+    master.connect(ctx.destination);
+  }
+  if(ctx.state==='suspended') ctx.resume();
+}
+function stopNodes(){
+  nodes.forEach(o=>{try{o.stop()}catch(e){}});
+  nodes = [];
+}
+function schedule(from){
+  const s = songs[current], step = 0.4;
+  const first = Math.ceil(from/step);
+  for(let n = first; n*step < s.duration; n++){
+    const when = ctx.currentTime + (n*step - from);
+    const freq = s.notes[n % s.notes.length];
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(0.35, when+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, when+step*0.95);
+    o.connect(g); g.connect(master);
+    o.start(when); o.stop(when+step);
+    nodes.push(o);
+  }
+}
+function fmt(t){t=Math.max(0,Math.floor(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
+
+function tick(){
+  if(!playing) return;
+  pos = ctx.currentTime - startedAt;
+  const d = songs[current].duration;
+  if(pos >= d){ nextSong(true); return; }
+  $('myProgressBar').value = (pos/d)*100;
+  $('currentTime').textContent = fmt(pos);
+}
+function play(){
+  if(current<0) return;
+  ensureCtx(); stopNodes();
+  startedAt = ctx.currentTime - pos;
+  schedule(pos);
+  playing = true;
+  $('masterPlay').textContent = '⏸';
+  clearInterval(ticker); ticker = setInterval(tick, 250);
+  renderSongs();
+}
+function pause(){
+  playing = false; stopNodes(); clearInterval(ticker);
+  $('masterPlay').textContent = '▶';
+  renderSongs();
+}
+function loadTrack(i){
+  current = i; pos = 0;
+  const s = songs[i];
+  $('masterSongName').textContent = s.title;
+  $('masterArtist').textContent = s.artist;
+  $('durationTime').textContent = fmt(s.duration);
+  $('currentTime').textContent = '0:00';
+  $('myProgressBar').value = 0;
+  recent = [s, ...recent.filter(r=>r.id!==s.id)].slice(0,6);
+  renderRecent();
+}
+function playIndex(i){
+  if(i===current){ playing ? pause() : play(); return; }
+  pause(); loadTrack(i); play();
+}
+function nextSong(auto){
+  if(!songs.length) return;
+  let i = shuffleOn ? Math.floor(Math.random()*songs.length) : (current+1)%songs.length;
+  pause(); loadTrack(i); play();
+}
+function prevSong(){
+  if(pos>3){ pos=0; if(playing) play(); else $('myProgressBar').value=0; return; }
+  const i = (current-1+songs.length)%songs.length;
+  pause(); loadTrack(i); play();
+}
+
+/* ---------- Rendering ---------- */
+function getView(){
+  const q = $('searchInput').value.trim().toLowerCase();
+  let list = songs.filter(s=>!q || s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
+  if($('sortSelect').value==='title') list.sort((a,b)=>a.title.localeCompare(b.title));
+  else list.sort((a,b)=>b.plays-a.plays);
+  return list;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderSongs(){
+  view = getView();
+  $('songCount').textContent = view.length + (view.length===1?' song':' songs');
+  $('listTitle').textContent = $('searchInput').value ? 'Search results' : 'Popular tracks';
+  const box = $('songsList');
+  if(!view.length){ box.innerHTML = '<div class="empty">No songs match your search. Try a different title or artist.</div>'; return; }
+  box.innerHTML = view.map((s,n)=>{
+    const idx = songs.indexOf(s), isCur = idx===current;
+    return `<div class="song ${isCur?'playing':''}" data-i="${idx}" tabindex="0" role="button" aria-label="Play ${esc(s.title)}">
+      <span>${isCur&&playing?'♪':n+1}</span>
+      <div><b>${esc(s.title)}</b><small>${esc(s.artist)}</small></div>
+      <span>${s.plays.toLocaleString()} plays</span></div>`;
+  }).join('');
+}
+function renderRecent(){
+  $('recentList').className = recent.length ? '' : 'empty';
+  $('recentList').innerHTML = recent.length
+    ? recent.map(s=>`<div class="song" style="grid-template-columns:1fr" data-i="${songs.findIndex(x=>x.id===s.id)}" tabindex="0" role="button"><div><b>${esc(s.title)}</b><small>${esc(s.artist)}</small></div></div>`).join('')
+    : 'Play a song to see history.';
+}
+
+/* ---------- Events ---------- */
+function onListActivate(e){
+  const row = e.target.closest('.song'); if(!row) return;
+  if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return;
+  e.preventDefault();
+  const i = +row.dataset.i; if(i>=0) playIndex(i);
+}
+$('songsList').addEventListener('click', onListActivate);
+$('songsList').addEventListener('keydown', onListActivate);
+$('recentList').addEventListener('click', onListActivate);
+$('recentList').addEventListener('keydown', onListActivate);
+
+$('masterPlay').onclick = ()=>{
+  if(current<0){ const first = songs.indexOf(getView()[0]); if(first>=0) playIndex(first); return; }
+  playing ? pause() : play();
+};
+$('next').onclick = ()=>nextSong();
+$('previous').onclick = prevSong;
+$('heroPlay').onclick = ()=>{ shuffleOn=false; $('shuffleBtn').style.opacity=1; playIndex(0); };
+$('shuffleBtn').onclick = ()=>{
+  shuffleOn = !shuffleOn;
+  $('shuffleBtn').style.background = shuffleOn ? '#fff' : '#000';
+  $('shuffleBtn').style.color = shuffleOn ? '#000' : '#fff';
+  if(shuffleOn) playIndex(Math.floor(Math.random()*songs.length));
+};
+$('searchInput').oninput = renderSongs;
+$('sortSelect').onchange = renderSongs;
+$('volumeRange').oninput = e=>{ if(master) master.gain.value = +e.target.value; };
+$('myProgressBar').oninput = e=>{
+  if(current<0) return;
+  pos = (+e.target.value/100)*songs[current].duration;
+  $('currentTime').textContent = fmt(pos);
+  if(playing) play();
+};
+
+/* ---------- Boot ---------- */
+loadSongs().then(renderSongs);
+</script>
 </body>
-
 </html>
