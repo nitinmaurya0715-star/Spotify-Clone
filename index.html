@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101018"><title>Vibe — Find Your Frequency</title>
+<link rel="icon" href="assets/logo.png" type="image/png"><link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
+</head><body>
+<audio id="vibeMusic" src="assets/theme.mp3" loop preload="metadata"></audio>
+<div id="minicircle" aria-hidden="true"></div>
+  <div class="intro" id="intro">
+    <div class="intro-glow"></div>
+
+    <div class="intro-logo">
+      <div class="orbit orbit-1"></div>
+      <div class="orbit orbit-2"></div>
+      <div class="orbit orbit-3"></div>
+
+      
+<div class="vibe-emblem">
+  <div class="vibe-ring ring-outer"></div>
+  <div class="vibe-ring ring-middle"></div>
+  <div class="vibe-ring ring-inner"></div>
+
+  <svg class="vibe-mark" viewBox="0 0 300 220"
+       aria-hidden="true">
+    <path d="M35 180 L150 45 L265 180"
+          class="v-mark"/>
+    <path d="M75 180 L150 95 L225 180"
+          class="v-mark v-mark-inner"/>
+  </svg>
+</div>
+
+
+      <div class="logo-text">
+        <h2 class="logo">
+    <span class="logo-bars">
+        <span></span>
+        <span></span>
+        <span></span>
+        </span>
+        VIBE.</h2>
+        <span>CREATED BY NITIN</span>
+      </div>
+    </div>
+
+    <button class="enter-button" id="enterButton">
+      ENTER WITH SOUND
+    </button>
+
+    <button class="skip-button" id="skipButton">
+      ENTER WITHOUT SOUND
+    </button>
+  </div>
+
+
+<main class="website" id="website" hidden inert>
+<header class="navbar"><a href="#home" class="logo" aria-label="Vibe home"><span class="logo-bars" aria-hidden="true"><span></span><span></span><span></span></span> VIBE.</a>
+<span class="creator">CREATED BY NITIN</span>
+<div class="nav-right"><button id="soundToggle" class="nav-link" aria-pressed="false">SOUND <span id="soundState">OFF</span></button>
+<button id="menuToggle" class="menu-button" aria-expanded="false" aria-controls="menuOverlay">MENU <span class="menu-icon">+</span></button></div></header>
+<nav class="menu-overlay" id="menuOverlay" aria-label="Main navigation" hidden>
+<button class="close-menu" id="closeMenu">CLOSE ×</button>
+<a href="#home">Overview <span>01</span></a>
+<button class="menu-player open-player">Music player <span>02</span></button>
+<a href="#about">About Vibe <span>03</span></a>
+<button class="menu-player" id="backIntro">Welcome screen <span>04</span></button></nav>
+<section class="hero" id="home">
+<div class="hero-background"></div><div class="hero-grain"></div>
+<div class="hero-content"><p class="eyebrow">Your mood. Your music. Your vibe. Discover the sound that feels like you.</p>
+<h1 id="heading" tabindex="-1">LIFE<br>WITHOUT<br>MUSIC IS<br>JUST<br>NOISE.</h1>
+<button class="explore-link open-player">Open music player <span aria-hidden="true">↗</span></button></div>
+<div class="hero-visual" id="heroVisual" aria-hidden="true"><div class="sound-orb"><div class="orb-ring ring-a"></div><div class="orb-ring ring-b"></div><div class="orb-ring ring-c"></div><div class="orb-core"></div></div></div>
+</section>
+<section id="about" class="simple-section"><p class="eyebrow">YOUR MUSIC. YOUR SPACE.</p><h2>Find your frequency.</h2><p>Discover five moods, save your favorites, or bring your own audio files.</p><button class="music-cta open-player">Start listening ↗</button></section>
+</main>
+<section id="playerScreen" hidden aria-label="Vibe music player"><div class="player-topbar"><button id="backHome">← Back to Vibe</button><span>YOUR MUSIC. YOUR SPACE.</span></div><iframe id="musicFrame" title="Vibe music library and audio player" data-src="player.html" allow="autoplay" hidden></iframe></section>
+<p id="siteStatus" role="status" class="site-status"></p>
+</body></html>
